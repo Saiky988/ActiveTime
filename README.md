@@ -20,20 +20,11 @@ ActiveTime solves this for small, cooperative, and private servers:
 * Stardew-Valley-like survival gameplay
 * Community smp servers
 
-```text
-23:00 — Last player leaves
-             │
-             ▼
-     Simulation freezes
-             │
-   8 hours pass in real life
-             │
-             ▼
-     First player joins
-             │
-             ▼
-     Simulation resumes
-```
+### A typical scenario
+
+* **23:00 — Last player quits:** ActiveTime detects zero active players and freezes the world simulation instantly (`/tick freeze`).
+* **00:00 to 07:00 — Overnight idle:** 8 hours pass in the real world, but 0 in-game ticks advance. Seasons stay still, crop growth timers pause, and mob spawners remain dormant.
+* **07:00 — A friend joins early:** The simulation unfreezes before the player fully loads in. Everyone continues exactly where the group left off.
 
 The world continues from essentially the exact simulation state instead of progressing while nobody is playing.
 
