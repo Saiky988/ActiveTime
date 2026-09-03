@@ -2,40 +2,98 @@ plugins {
     id 'java'
 }
 
-group = 'com.saiky.activetime'
-version = '0.1.0'
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+allprojects {
+    group = 'com.saiky.activetime'
+    version = '1.0.0'
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-}
+subprojects {
+    apply plugin: 'java'
 
-repositories {
-    mavenCentral()
-    maven {
-        name = 'papermc'
-        url = 'https://repo.papermc.io/repository/maven-public/'
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+    }
+
+    repositories {
+        mavenCentral()
+        maven {
+            name = 'PaperMC'
+            url = 'https://repo.papermc.io/repository/maven-public/'
+        }
+        maven {
+            name = 'FabricMC'
+            url = 'https://maven.fabricmc.net/'
+        }
+        maven {
+            name = 'Mojang'
+            url = 'https://libraries.minecraft.net/'
+        }
+        maven {
+            name = 'MinecraftForge'
+            url = 'https://maven.minecraftforge.net/'
+        }
+    }
+
+    dependencies {
+        testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+        testImplementation 'org.mockito:mockito-core:5.11.0'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+
+    test {
+        useJUnitPlatform()
     }
 }
 
-dependencies {
-    compileOnly 'io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT'
+project(':paper') {
+    dependencies {
+        implementation project(':common')
+        compileOnly 'io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT'
+    }
 
-    testImplementation 'io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
-    testImplementation 'org.mockito:mockito-core:5.11.0'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    jar {
+        archiveFileName = "activetime-paper-${project.version}.jar"
+        from project(':common').sourceSets.main.output
+    }
 }
 
-test {
-    useJUnitPlatform()
+project(':fabric') {
+    dependencies {
+        implementation project(':common')
+        compileOnly 'net.fabricmc:fabric-loader:0.15.11'
+        compileOnly 'com.mojang:brigadier:1.2.9'
+    }
+
+    jar {
+        archiveFileName = "activetime-fabric-${project.version}.jar"
+        from project(':common').sourceSets.main.output
+    }
 }
 
-jar {
-    archiveFileName = "ActiveTime-${project.version}.jar"
+project(':forge') {
+    dependencies {
+        implementation project(':common')
+        compileOnly 'com.mojang:brigadier:1.2.9'
+    }
+
+    jar {
+        archiveFileName = "activetime-forge-${project.version}.jar"
+        from project(':common').sourceSets.main.output
+    }
 }
 
+// Convenient task to collect all loader JARs into root build/libs/
+tasks.register('collectJars', Copy) {
+    dependsOn subprojects.collect { it.tasks.named('jar') }
+    into layout.buildDirectory.dir('libs')
+    from(project(':paper').tasks.named('jar'))
+    from(project(':fabric').tasks.named('jar'))
+    from(project(':forge').tasks.named('jar'))
+}
+
+build.dependsOn collectJars

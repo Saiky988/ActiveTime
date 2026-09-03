@@ -1,2 +1,6 @@
 rootProject.name = 'ActiveTime'
 
+include 'common'
+include 'paper'
+include 'fabric'
+include 'forge'
