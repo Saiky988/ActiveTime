@@ -19,3 +19,4 @@ public interface TickManagerAdapter {
      */
     void setFrozen(boolean frozen);
 }
+

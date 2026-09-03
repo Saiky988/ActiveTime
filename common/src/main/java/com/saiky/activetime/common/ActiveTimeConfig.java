@@ -125,3 +125,4 @@ public class ActiveTimeConfig {
         this.unfreezeMessage = unfreezeMessage;
     }
 }
+

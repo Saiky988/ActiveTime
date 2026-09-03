@@ -19,3 +19,4 @@ permissions:
   activetime.admin:
     description: Allows manual simulation freezing, unfreezing, and configuration reloading.
     default: op
+

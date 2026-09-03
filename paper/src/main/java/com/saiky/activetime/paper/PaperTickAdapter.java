@@ -48,3 +48,4 @@ public class PaperTickAdapter implements TickManagerAdapter {
         server.dispatchCommand(server.getConsoleSender(), cmd);
     }
 }
+

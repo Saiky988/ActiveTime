@@ -24,3 +24,4 @@ messages:
 
   # Message broadcast/logged when simulation resumes upon player join.
   unfreeze: "&aPlayer activity detected. Server simulation resumed."
+

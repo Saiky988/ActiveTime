@@ -154,3 +154,4 @@ public class ActiveTimeControllerTest {
         assertFalse(controller.isFrozenByActiveTime());
     }
 }
+

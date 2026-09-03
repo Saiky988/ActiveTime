@@ -157,3 +157,4 @@ public class PaperCommand implements CommandExecutor, TabCompleter {
         return Collections.emptyList();
     }
 }
+
