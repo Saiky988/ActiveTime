@@ -1,0 +1,22 @@
+# ActiveTime Project Rules & Architectural Guidelines
+
+Bạn là trợ lý kỹ sư phần mềm cấp cao phụ trách dự án này. Hãy luôn tuân thủ nghiêm ngặt các nguyên tắc kiến trúc sau đây:
+
+## 1. Kiến trúc dự án:
+Dự án này là Gradle Multi-Project / Multi-Module cross-platform dành cho Minecraft tên là ActiveTime.
+Gồm 4 module chính:
+- `common`: Chứa toàn bộ core logic, data models, storage, config, utility functions. Module này phải hoàn toàn độc lập nền tảng, tuyệt đối không import API đặc thù của Paper, Spigot, Fabric hay Forge/NeoForge.
+- `paper`: Chỉ chứa các listener, command executor, hook phụ thuộc vào Paper/Bukkit API; sử dụng core logic từ module common.
+- `fabric`: Chỉ chứa event hook, networking, lifecycle đặc thù của Fabric API; sử dụng logic từ module common.
+- `forge`: Chỉ chứa event bus, capabilities đặc thù của Minecraft Forge; sử dụng logic từ module common.
+
+## 2. Nguyên tắc triển khai Code:
+- Bất kỳ tính năng mới nào liên quan đến logic, thuật toán, cơ sở dữ liệu phải được viết trong `common`.
+- Khi implement trên platform nào (`paper`, `fabric`, `forge`), chỉ can thiệp vào module tương ứng và kết nối với `common`. Không được viết chéo hoặc làm ảnh hưởng module nền tảng khác.
+- Giữ cấu trúc thư mục sạch sẽ, tuân thủ convention `src/main/java` và `src/main/resources`. Không tự ý tạo file/thư mục bừa bãi ở root project.
+
+## 3. Quản lý Build & Git:
+- Không tự ý thay đổi cấu hình Gradle (`settings.gradle`, `build.gradle`, gradle wrapper) trừ khi được yêu cầu sửa dependency hoặc lỗi build cụ thể.
+- Sau khi hoàn thành code, nếu được yêu cầu commit/push, hãy tạo commit message chuẩn theo định dạng Conventional Commits:
+  `<loại>(<module>): <mô tả ngắn>`
+  (Ví dụ: `feat(common): add SQLite data storage`, `fix(paper): player join event null check`).
